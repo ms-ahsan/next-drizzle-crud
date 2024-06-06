@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## About
 
-## Getting Started
+This project is a Task CRUD application built using Next.js, Drizzle ORM, and PostgreSQL database hosted on Vercel. It allows users to manage tasks with the following features:
 
-First, run the development server:
+- **Add Task:** Users can add a new task.
+- **View Tasks:** Users can view all tasks that have been added.
+- **Edit Task:** Users can edit an existing task.
+- **Delete Task:** Users can delete an existing task.
+
+The application leverages Next.js for server-side rendering and client-side routing, providing a seamless user experience. Drizzle ORM is used for database operations, ensuring efficient management of task data. The PostgreSQL database, hosted on Vercel, provides a reliable and scalable data storage solution for the application.
+
+You can see a live demo at [Task Manager App Demo](https://test-gema-phala-ananta.vercel.app/)
+
+## Running locally in development mode
+
+To get started, just clone the repository and run:
 
 ```bash
+git clone https://github.com/iaincollins/nextjs-starter.git
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Setting up the PostgreSQL Database on Vercel using Drizzle ORM
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Create a Vercel Account:** If you don't have one already, sign up for a Vercel account at [Vercel](https://vercel.com/).
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+2. **Install Vercel CLI:** Install the Vercel CLI globally using npm:
 
-## Learn More
+    ```bash
+    npm install -g vercel
+    ```
 
-To learn more about Next.js, take a look at the following resources:
+3. **Create a PostgreSQL Database:** Set up a PostgreSQL database using Vercel's integrations. You can do this by navigating to your Vercel dashboard, selecting your project, and adding the PostgreSQL integration.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+4. **Configure Environment Variables:** Set up environment variables for your Next.js project to connect to the PostgreSQL database. You can find the database credentials  in the Vercel dashboard after setting up the integration on .env.local tab then copy the POSTGRES_URL.
 
-## Deploy on Vercel
+5. **Generate Migrations Using Drizzle-kit:**
+   
+   - *(Optional)* Create your database schema in a file (e.g., `server/schema.ts`). Here is an example schema:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+     ```typescript
+     import { pgTable, serial, text, boolean } from 'drizzle-orm/pg-core';
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+     export const tasks = pgTable('tasks', {
+       id: serial('id').primaryKey(),
+       title: text('title').notNull(),
+       description: text('description').notNull(),
+       done: boolean('done').default(false),
+     });
+     ```
+
+   - Generate a migration file based on the schema:
+
+     ```bash
+     npx drizzle-kit generate
+     ```
+
+   - Apply the migration to your PostgreSQL database:
+
+     ```bash
+     npx drizzle-kit push
+     ```
+
+
+By following these steps, you can set up a PostgreSQL database on Vercel and integrate it with your Next.js project then can running locally
